@@ -119,10 +119,46 @@
     color: var(--muted);
   }
 
+  .readiness-score-wrapper {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
   .readiness-score {
     font-family: 'Fraunces', serif;
     font-size: 28px;
     color: var(--orange);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+  }
+
+  .readiness-score:hover {
+    color: var(--accent);
+  }
+
+  .readiness-edit-hint {
+    font-size: 9px;
+    color: var(--border);
+    letter-spacing: 0.08em;
+    transition: color 0.2s;
+  }
+
+  .readiness-score-wrapper:hover .readiness-edit-hint {
+    color: var(--muted);
+  }
+
+  .readiness-input-inline {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    color: var(--orange);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--orange);
+    outline: none;
+    width: 70px;
+    padding: 0;
   }
 
   .bar-track {
@@ -134,15 +170,10 @@
 
   .bar-fill {
     height: 100%;
-    width: 58%;
+    width: 0%;
     background: linear-gradient(90deg, var(--orange), var(--accent));
     border-radius: 2px;
-    animation: fillBar 1.5s ease forwards;
-  }
-
-  @keyframes fillBar {
-    from { width: 0; }
-    to { width: 58%; }
+    transition: width 0.8s ease;
   }
 
   .target-line {
@@ -154,9 +185,7 @@
   }
 
   /* Week sections */
-  .week {
-    margin-bottom: 56px;
-  }
+  .week { margin-bottom: 56px; }
 
   .week-header {
     display: flex;
@@ -175,9 +204,7 @@
     line-height: 1;
   }
 
-  .week-title {
-    flex: 1;
-  }
+  .week-title { flex: 1; }
 
   .week-title h2 {
     font-size: 14px;
@@ -198,10 +225,7 @@
   }
 
   /* Day cards */
-  .days-grid {
-    display: grid;
-    gap: 8px;
-  }
+  .days-grid { display: grid; gap: 8px; }
 
   .day-card {
     background: var(--surface);
@@ -213,14 +237,9 @@
     gap: 16px;
     align-items: start;
     transition: border-color 0.2s;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
   }
 
-  .day-card:hover {
-    border-color: var(--accent);
-  }
+  .day-card:hover { border-color: var(--accent); }
 
   .day-card.exam-day {
     border-color: var(--green);
@@ -232,8 +251,21 @@
     background: rgba(167, 139, 250, 0.05);
   }
 
-  .day-card.rest-day {
-    opacity: 0.6;
+  .day-card.rest-day { opacity: 0.6; }
+
+  /* Today highlight */
+  .day-card.today {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.3), 0 0 24px rgba(96, 165, 250, 0.07);
+  }
+
+  .today-badge {
+    display: inline-block;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 6px;
   }
 
   .day-label {
@@ -272,6 +304,7 @@
     gap: 4px;
     margin-top: 8px;
     flex-wrap: wrap;
+    align-items: center;
   }
 
   .tag {
@@ -282,11 +315,29 @@
   }
 
   .tag-socratic { background: rgba(96, 165, 250, 0.15); color: var(--accent); }
-  .tag-podcast { background: rgba(167, 139, 250, 0.15); color: var(--accent2); }
-  .tag-video { background: rgba(251, 146, 60, 0.15); color: var(--orange); }
-  .tag-quiz { background: rgba(74, 222, 128, 0.15); color: var(--green); }
-  .tag-rest { background: rgba(107, 114, 128, 0.15); color: var(--muted); }
-  .tag-exam { background: rgba(74, 222, 128, 0.2); color: var(--green); }
+  .tag-podcast  { background: rgba(167, 139, 250, 0.15); color: var(--accent2); }
+  .tag-video    { background: rgba(251, 146, 60, 0.15);  color: var(--orange); }
+  .tag-quiz     { background: rgba(74, 222, 128, 0.15);  color: var(--green); }
+  .tag-rest     { background: rgba(107, 114, 128, 0.15); color: var(--muted); }
+  .tag-exam     { background: rgba(74, 222, 128, 0.2);   color: var(--green); }
+
+  /* Completion toggle */
+  .complete-label {
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 4px;
+  }
+
+  .complete-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+  }
+
+  .complete-label:hover .day-status { background: var(--muted); }
 
   .day-status {
     width: 8px;
@@ -295,27 +346,61 @@
     background: var(--border);
     margin-top: 4px;
     flex-shrink: 0;
+    transition: background 0.2s;
   }
 
-  .day-card.completed {
-    opacity: 0.75;
-    border-color: var(--green);
+  .day-card.completed { opacity: 0.75; }
+  .day-card.completed .day-status { background: var(--green); }
+  .day-card.completed h3::after { content: ' ✓'; color: var(--green); font-size: 11px; }
+
+  /* Session notes */
+  .notes-row {
+    grid-column: 1 / -1;
+    display: none;
+    padding-top: 12px;
+    margin-top: 4px;
+    border-top: 1px solid var(--border);
   }
 
-  .day-card.completed .day-status {
-    background: var(--green);
-  }
+  .notes-row.open { display: block; }
 
-  .day-card.completed h3::after {
-    content: ' ✓';
-    color: var(--green);
+  .session-notes {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
     font-size: 11px;
+    padding: 10px 12px;
+    min-height: 64px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .session-notes:focus { outline: none; border-color: var(--accent); }
+  .session-notes::placeholder { color: var(--border); }
+
+  .tag-notes {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--muted);
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+
+  .tag-notes:hover { color: var(--text); border-color: var(--border); }
+
+  .tag-notes.has-notes {
+    background: rgba(167, 139, 250, 0.15);
+    color: var(--accent2);
+    border-color: transparent;
   }
 
   /* Podcast section */
-  .podcasts {
-    margin-bottom: 56px;
-  }
+  .podcasts { margin-bottom: 56px; }
 
   .section-header {
     font-size: 10px;
@@ -382,15 +467,10 @@
     transition: all 0.2s;
   }
 
-  .copy-btn:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
+  .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
 
-  /* Gaps section */
-  .gaps {
-    margin-bottom: 56px;
-  }
+  /* Gaps */
+  .gaps { margin-bottom: 56px; }
 
   .gap-grid {
     display: grid;
@@ -409,16 +489,10 @@
     font-size: 12px;
   }
 
-  .gap-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .dot-red { background: var(--red); }
+  .gap-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-red    { background: var(--red); }
   .dot-orange { background: var(--orange); }
-  .dot-green { background: var(--green); }
+  .dot-green  { background: var(--green); }
 
   /* Instructions */
   .instructions {
@@ -438,15 +512,8 @@
     margin-bottom: 12px;
   }
 
-  .instructions p {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-
-  .instructions strong {
-    color: var(--text);
-  }
+  .instructions p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .instructions strong { color: var(--text); }
 
   footer {
     text-align: center;
@@ -457,10 +524,8 @@
   }
 
   @media (max-width: 600px) {
-    .day-card {
-      grid-template-columns: 60px 1fr;
-    }
-    .day-status { display: none; }
+    .day-card { grid-template-columns: 60px 1fr; }
+    .complete-label { display: none; }
   }
 </style>
 </head>
@@ -469,34 +534,34 @@
 <div class="container">
 
   <header>
-    <div class="exam-badge">Fortinet NSE4 — FortiOS 7.6</div>
+    <div class="exam-badge">Fortinet NSE4 &mdash; FortiOS 7.6</div>
     <h1>Study Plan<br><em>May 2nd.</em></h1>
-    <p class="subtitle">21 days · structured · active learning</p>
+    <p class="subtitle">21 days &middot; structured &middot; active learning</p>
     <div class="countdown" id="countdown">Calculating days remaining...</div>
   </header>
 
-  <!-- Readiness -->
   <div class="readiness">
     <div class="readiness-header">
       <span class="readiness-label">Current Readiness</span>
-      <span class="readiness-score">68%</span>
+      <div class="readiness-score-wrapper">
+        <span class="readiness-score" id="readiness-score" title="Click to update">68%</span>
+        <span class="readiness-edit-hint">click to update</span>
+      </div>
     </div>
     <div class="bar-track">
-      <div class="bar-fill" style="animation: none; width: 68%;"></div>
+      <div class="bar-fill" id="bar-fill"></div>
     </div>
     <div class="target-line">
-      <span>Baseline 58% — April 11 · Updated April 15</span>
+      <span>Baseline 58% &middot; April 11 &middot; Updated April 15</span>
       <span>Target: 75%+ by April 25</span>
     </div>
   </div>
 
-  <!-- How to use -->
   <div class="instructions">
     <h3>How to use this plan</h3>
-    <p>Each day has a defined focus. Open the Claude chat, say <strong>"go"</strong> and study the day's topic. Claude will tell you <strong>when today's session is done</strong> — don't keep going beyond that. Podcasts are for driving and downtime only, never a substitute for active sessions. <strong>No new material after April 29th.</strong></p>
+    <p>Each day has a defined focus. Open the Claude chat, say <strong>"go"</strong> and study the day's topic. Claude will tell you <strong>when today's session is done</strong> &mdash; don't keep going beyond that. Podcasts are for driving and downtime only, never a substitute for active sessions. <strong>No new material after April 29th.</strong></p>
   </div>
 
-  <!-- Knowledge Gaps -->
   <div class="gaps">
     <div class="section-header">Knowledge Gaps to Close</div>
     <div class="gap-grid">
@@ -516,92 +581,99 @@
     </div>
   </div>
 
-  <!-- Week 1 -->
+  <!-- WEEK 1 -->
   <div class="week">
     <div class="week-header">
       <div class="week-number">01</div>
       <div class="week-title">
         <h2>Close the Red Gaps</h2>
-        <p>Security Profiles — the highest risk topics on your exam</p>
+        <p>Security Profiles &mdash; the highest risk topics on your exam</p>
       </div>
-      <div class="week-dates">Apr 11 – 17</div>
+      <div class="week-dates">Apr 11 &ndash; 17</div>
     </div>
     <div class="days-grid">
 
-      <div class="day-card rest-day completed">
+      <div class="day-card rest-day" data-date="2026-04-11">
         <div class="day-label"><div class="day-name">Sat</div><div class="day-date">Apr 11</div></div>
         <div class="day-content">
           <h3>Rest + Podcast Day</h3>
           <p>Security Profiles + SD-WAN podcasts done. Major Socratic session: Certificate Ops, SSL Inspection, Web Filtering, FSSO, IPSec, SD-WAN, HA all covered.</p>
-          <div class="day-tags"><span class="tag tag-podcast">Podcast</span><span class="tag tag-rest">Completed</span></div>
+          <div class="day-tags"><span class="tag tag-podcast">Podcast</span><span class="tag tag-rest">Completed</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card completed">
+      <div class="day-card" data-date="2026-04-12">
         <div class="day-label"><div class="day-name">Sun</div><div class="day-date">Apr 12</div></div>
         <div class="day-content">
           <h3>Antivirus</h3>
           <p>Completed: AV podcast + Socratic session. Detection stack: signatures, heuristics, FortiSandbox. Flow vs proxy tradeoffs covered.</p>
-          <div class="day-tags"><span class="tag tag-socratic">Socratic ✓</span><span class="tag tag-podcast">Podcast ✓</span></div>
+          <div class="day-tags"><span class="tag tag-socratic">Socratic &#10003;</span><span class="tag tag-podcast">Podcast &#10003;</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card completed">
+      <div class="day-card" data-date="2026-04-13">
         <div class="day-label"><div class="day-name">Mon</div><div class="day-date">Apr 13</div></div>
         <div class="day-content">
           <h3>IPS</h3>
           <p>Completed: IPS podcast + Socratic session. Signature vs anomaly detection, actions (Pass/Monitor/Block/Reset/Quarantine), SSL dependency covered.</p>
-          <div class="day-tags"><span class="tag tag-socratic">Socratic ✓</span><span class="tag tag-podcast">Podcast ✓</span></div>
+          <div class="day-tags"><span class="tag tag-socratic">Socratic &#10003;</span><span class="tag tag-podcast">Podcast &#10003;</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card completed">
+      <div class="day-card" data-date="2026-04-14">
         <div class="day-label"><div class="day-name">Tue</div><div class="day-date">Apr 14</div></div>
         <div class="day-content">
           <h3>App Control + DNS Filtering</h3>
           <p>Completed: Both topics covered in Socratic session. App signatures, ISDB, flow vs proxy, DNS translation, safe search enforcement. 6/6 on quiz.</p>
-          <div class="day-tags"><span class="tag tag-socratic">Socratic ✓</span><span class="tag tag-quiz">Quiz 6/6 ✓</span></div>
+          <div class="day-tags"><span class="tag tag-socratic">Socratic &#10003;</span><span class="tag tag-quiz">Quiz 6/6 &#10003;</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" data-date="2026-04-15">
         <div class="day-label"><div class="day-name">Wed</div><div class="day-date">Apr 15</div></div>
         <div class="day-content">
           <h3>Web Filtering Full Validation</h3>
-          <p>Validate Web Filtering with full NSE4 quiz — move it from orange to green. Focus on config specifics and overrides.</p>
-          <div class="day-tags"><span class="tag tag-quiz">NSE4 Quiz</span></div>
+          <p>Validate Web Filtering with full NSE4 quiz &mdash; move it from orange to green. Focus on config specifics and overrides.</p>
+          <div class="day-tags"><span class="tag tag-quiz">NSE4 Quiz</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" data-date="2026-04-16">
         <div class="day-label"><div class="day-name">Thu</div><div class="day-date">Apr 16</div></div>
         <div class="day-content">
           <h3>Security Profiles Full Consolidation Quiz</h3>
           <p>NSE4 quiz across AV, IPS, App Control, DNS Filtering and Web Filtering. Say "go" to run the test.</p>
-          <div class="day-tags"><span class="tag tag-quiz">NSE4 Quiz</span></div>
+          <div class="day-tags"><span class="tag tag-quiz">NSE4 Quiz</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card test-day">
+      <div class="day-card test-day" data-date="2026-04-17">
         <div class="day-label"><div class="day-name">Fri</div><div class="day-date">Apr 17</div></div>
         <div class="day-content">
-          <h3>⚡ Week 1 Readiness Test</h3>
+          <h3>&#9889; Week 1 Readiness Test</h3>
           <p>Full NSE4 style assessment across all Week 1 topics. Benchmark progress and identify remaining gaps before Week 2.</p>
-          <div class="day-tags"><span class="tag tag-quiz">Readiness Test</span><span class="tag tag-podcast">Podcast — Driving</span></div>
+          <div class="day-tags"><span class="tag tag-quiz">Readiness Test</span><span class="tag tag-podcast">Podcast &mdash; Driving</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
     </div>
   </div>
 
-  <!-- Week 2 -->
+  <!-- WEEK 2 -->
   <div class="week">
     <div class="week-header">
       <div class="week-number">02</div>
@@ -609,175 +681,189 @@
         <h2>Close the Orange Gaps</h2>
         <p>Precision topics + complete remaining subject areas</p>
       </div>
-      <div class="week-dates">Apr 18 – 24</div>
+      <div class="week-dates">Apr 18 &ndash; 24</div>
     </div>
     <div class="days-grid">
 
-      <div class="day-card">
+      <div class="day-card" data-date="2026-04-18">
         <div class="day-label"><div class="day-name">Sat</div><div class="day-date">Apr 18</div></div>
         <div class="day-content">
-          <h3>IPSec Deep Dive — XAuth + Peer ID</h3>
+          <h3>IPSec Deep Dive &mdash; XAuth + Peer ID</h3>
           <p>XAuth as extended authentication layer, Peer ID types, dialup VPN architecture, certificate vs PSK at depth.</p>
-          <div class="day-tags"><span class="tag tag-socratic">Socratic</span><span class="tag tag-podcast">Podcast</span></div>
+          <div class="day-tags"><span class="tag tag-socratic">Socratic</span><span class="tag tag-podcast">Podcast</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" data-date="2026-04-19">
         <div class="day-label"><div class="day-name">Sun</div><div class="day-date">Apr 19</div></div>
         <div class="day-content">
           <h3>FSSO Advanced AD Mode</h3>
           <p>Advanced vs standard mode, LDAP client configuration, nested group support, logoff detection methods.</p>
-          <div class="day-tags"><span class="tag tag-socratic">Socratic</span></div>
+          <div class="day-tags"><span class="tag tag-socratic">Socratic</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" data-date="2026-04-20">
         <div class="day-label"><div class="day-name">Mon</div><div class="day-date">Apr 20</div></div>
         <div class="day-content">
           <h3>Proxy vs Flow Inspection + SSL Local Server</h3>
           <p>Inspection mode differences, use cases, limitations. SSL inspection protecting local servers vs clients.</p>
-          <div class="day-tags"><span class="tag tag-socratic">Socratic</span></div>
+          <div class="day-tags"><span class="tag tag-socratic">Socratic</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" data-date="2026-04-21">
         <div class="day-label"><div class="day-name">Tue</div><div class="day-date">Apr 21</div></div>
         <div class="day-content">
           <h3>IP Pools + NAT Validation</h3>
           <p>All four IP pool types, carrier grade NAT use cases, port block allocation vs fixed port range.</p>
-          <div class="day-tags"><span class="tag tag-socratic">Socratic</span><span class="tag tag-quiz">NSE4 Questions</span></div>
+          <div class="day-tags"><span class="tag tag-socratic">Socratic</span><span class="tag tag-quiz">NSE4 Questions</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" data-date="2026-04-22">
         <div class="day-label"><div class="day-name">Wed</div><div class="day-date">Apr 22</div></div>
         <div class="day-content">
           <h3>Web Filtering Full Validation</h3>
           <p>Complete NSE4 quiz to move web filtering from orange to green. Focus on configuration specifics and overrides.</p>
-          <div class="day-tags"><span class="tag tag-quiz">NSE4 Quiz</span></div>
+          <div class="day-tags"><span class="tag tag-quiz">NSE4 Quiz</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" data-date="2026-04-23">
         <div class="day-label"><div class="day-name">Thu</div><div class="day-date">Apr 23</div></div>
         <div class="day-content">
           <h3>Diagnostics + Troubleshooting</h3>
           <p>Complete diag debug flow, key CLI commands, systematic troubleshooting methodology, RPF deep dive.</p>
-          <div class="day-tags"><span class="tag tag-socratic">Socratic</span></div>
+          <div class="day-tags"><span class="tag tag-socratic">Socratic</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card test-day">
+      <div class="day-card test-day" data-date="2026-04-24">
         <div class="day-label"><div class="day-name">Fri</div><div class="day-date">Apr 24</div></div>
         <div class="day-content">
-          <h3>⚡ Week 2 Readiness Test + FGT Cloud + FortiSASE</h3>
+          <h3>&#9889; Week 2 Readiness Test + FGT Cloud + FortiSASE</h3>
           <p>Morning: FGT in Cloud and FortiSASE Socratic session. Afternoon: Full Week 2 readiness assessment.</p>
-          <div class="day-tags"><span class="tag tag-socratic">Socratic</span><span class="tag tag-quiz">Readiness Test</span></div>
+          <div class="day-tags"><span class="tag tag-socratic">Socratic</span><span class="tag tag-quiz">Readiness Test</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
     </div>
   </div>
 
-  <!-- Week 3 -->
+  <!-- WEEK 3 -->
   <div class="week">
     <div class="week-header">
       <div class="week-number">03</div>
       <div class="week-title">
         <h2>Exam Preparation</h2>
-        <p>No new material — consolidation, practice exams, confidence</p>
+        <p>No new material &mdash; consolidation, practice exams, confidence</p>
       </div>
-      <div class="week-dates">Apr 25 – May 2</div>
+      <div class="week-dates">Apr 25 &ndash; May 2</div>
     </div>
     <div class="days-grid">
 
-      <div class="day-card test-day">
+      <div class="day-card test-day" data-date="2026-04-25">
         <div class="day-label"><div class="day-name">Sat</div><div class="day-date">Apr 25</div></div>
         <div class="day-content">
-          <h3>⚡ Full Practice Exam #1</h3>
-          <p>Complete NSE4 sample paper under timed exam conditions. Full debrief after — identify every incorrect answer.</p>
-          <div class="day-tags"><span class="tag tag-quiz">Practice Exam</span></div>
+          <h3>&#9889; Full Practice Exam #1</h3>
+          <p>Complete NSE4 sample paper under timed exam conditions. Full debrief after &mdash; identify every incorrect answer.</p>
+          <div class="day-tags"><span class="tag tag-quiz">Practice Exam</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" data-date="2026-04-26">
         <div class="day-label"><div class="day-name">Sun</div><div class="day-date">Apr 26</div></div>
         <div class="day-content">
           <h3>Practice Exam Debrief</h3>
           <p>Drill every incorrect answer from Practice Exam #1. Targeted Socratic on weak areas only.</p>
-          <div class="day-tags"><span class="tag tag-socratic">Targeted Socratic</span></div>
+          <div class="day-tags"><span class="tag tag-socratic">Targeted Socratic</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card test-day">
+      <div class="day-card test-day" data-date="2026-04-27">
         <div class="day-label"><div class="day-name">Mon</div><div class="day-date">Apr 27</div></div>
         <div class="day-content">
-          <h3>⚡ Full Practice Exam #2</h3>
+          <h3>&#9889; Full Practice Exam #2</h3>
           <p>Second full timed practice exam. Target 75%+. This is your final benchmark before exam day.</p>
-          <div class="day-tags"><span class="tag tag-quiz">Practice Exam</span></div>
+          <div class="day-tags"><span class="tag tag-quiz">Practice Exam</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card">
+      <div class="day-card" data-date="2026-04-28">
         <div class="day-label"><div class="day-name">Tue</div><div class="day-date">Apr 28</div></div>
         <div class="day-content">
           <h3>Final Weak Area Drilling</h3>
           <p>Last active study day. NSE4 questions on remaining weak areas only. No new material beyond this point.</p>
-          <div class="day-tags"><span class="tag tag-quiz">NSE4 Questions</span></div>
+          <div class="day-tags"><span class="tag tag-quiz">NSE4 Questions</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card rest-day">
+      <div class="day-card rest-day" data-date="2026-04-29">
         <div class="day-label"><div class="day-name">Wed</div><div class="day-date">Apr 29</div></div>
         <div class="day-content">
           <h3>Light Revision Only</h3>
           <p>Podcasts only. No active study. Let everything consolidate. Rest your brain.</p>
-          <div class="day-tags"><span class="tag tag-podcast">Podcasts Only</span><span class="tag tag-rest">Rest</span></div>
+          <div class="day-tags"><span class="tag tag-podcast">Podcasts Only</span><span class="tag tag-rest">Rest</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card rest-day">
+      <div class="day-card rest-day" data-date="2026-05-01">
         <div class="day-label"><div class="day-name">Fri</div><div class="day-date">May 1</div></div>
         <div class="day-content">
           <h3>Rest Day</h3>
           <p>Nothing heavy. You've done the work. Trust the preparation.</p>
-          <div class="day-tags"><span class="tag tag-rest">Rest</span></div>
+          <div class="day-tags"><span class="tag tag-rest">Rest</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
-      <div class="day-card exam-day">
-        <div class="day-label"><div class="day-name">Fri</div><div class="day-date">May 2</div></div>
+      <div class="day-card exam-day" data-date="2026-05-02">
+        <div class="day-label"><div class="day-name">Sat</div><div class="day-date">May 2</div></div>
         <div class="day-content">
-          <h3>🎯 Exam Day</h3>
+          <h3>&#127919; Exam Day</h3>
           <p>NSE4 FortiOS 7.6. You're ready. Trust the process.</p>
-          <div class="day-tags"><span class="tag tag-exam">NSE4 Exam</span></div>
+          <div class="day-tags"><span class="tag tag-exam">NSE4 Exam</span><button class="tag tag-notes notes-btn">notes</button></div>
         </div>
-        <div class="day-status"></div>
+        <label class="complete-label" title="Mark complete"><input type="checkbox" class="completion-cb"><div class="day-status"></div></label>
+        <div class="notes-row"><textarea class="session-notes" placeholder="Session notes &mdash; what did you cover? What needs review?"></textarea></div>
       </div>
 
     </div>
   </div>
 
-  <!-- Podcasts -->
+  <!-- PODCASTS -->
   <div class="podcasts">
-    <div class="section-header">NotebookLM Podcast Prompts — Study While Driving</div>
+    <div class="section-header">NotebookLM Podcast Prompts &mdash; Study While Driving</div>
     <div class="podcast-grid">
 
       <div class="podcast-card">
-        <h3>🎙 Antivirus</h3>
+        <h3>&#128218; Antivirus</h3>
         <div class="prompt-label">NotebookLM Prompt</div>
         <div class="prompt-box">
           Create a conversational podcast deep dive on FortiOS 7.6 Antivirus for NSE4. Cover: how antivirus inspection works in the traffic pipeline, flow-based vs proxy-based inspection modes and their tradeoffs, how SSL inspection is a prerequisite for inspecting encrypted threats, FortiGuard antivirus database and updates, grayware and heuristic detection, and quarantine options. Use real world examples. Target: experienced network engineer preparing for NSE4.
@@ -786,7 +872,7 @@
       </div>
 
       <div class="podcast-card">
-        <h3>🎙 IPS</h3>
+        <h3>&#128218; IPS</h3>
         <div class="prompt-label">NotebookLM Prompt</div>
         <div class="prompt-box">
           Create a conversational podcast on FortiOS 7.6 IPS for NSE4. Cover: difference between signature-based and anomaly-based detection, rate-based detection, IPS sensor configuration and filter options, pass/block/reset/monitor actions, flow vs proxy inspection impact on IPS, false positive management, and how IPS depends on SSL inspection for encrypted traffic visibility. Target: experienced network engineer.
@@ -795,7 +881,7 @@
       </div>
 
       <div class="podcast-card">
-        <h3>🎙 App Control</h3>
+        <h3>&#128218; App Control</h3>
         <div class="prompt-label">NotebookLM Prompt</div>
         <div class="prompt-box">
           Create a conversational podcast on FortiOS 7.6 Application Control for NSE4. Cover: how application signatures work, ISDB and FortiGuard application database, flow-based vs proxy-based inspection and why proxy mode breaks Google applications, application override configuration, cloud application visibility, and integration with firewall policies and SSL inspection. Prioritise FortiOS specific terminology and scenario reasoning.
@@ -804,16 +890,16 @@
       </div>
 
       <div class="podcast-card">
-        <h3>🎙 DNS Filtering</h3>
+        <h3>&#128218; DNS Filtering</h3>
         <div class="prompt-label">NotebookLM Prompt</div>
         <div class="prompt-box">
-          Create a conversational podcast on FortiOS 7.6 DNS Filtering for NSE4. Cover: how DNS filtering works as a security layer, FortiGuard DNS categories, DNS filtering profile configuration, the difference between DNS filtering and web filtering and how they complement each other, botnet C&C detection via DNS, and safe search enforcement via DNS. Target: experienced network engineer preparing for NSE4.
+          Create a conversational podcast on FortiOS 7.6 DNS Filtering for NSE4. Cover: how DNS filtering works as a security layer, FortiGuard DNS categories, DNS filtering profile configuration, the difference between DNS filtering and web filtering and how they complement each other, botnet C&amp;C detection via DNS, and safe search enforcement via DNS. Target: experienced network engineer preparing for NSE4.
           <button class="copy-btn" onclick="copyPrompt(this)">copy</button>
         </div>
       </div>
 
       <div class="podcast-card">
-        <h3>🎙 IPSec Deep Dive</h3>
+        <h3>&#128218; IPSec Deep Dive</h3>
         <div class="prompt-label">NotebookLM Prompt</div>
         <div class="prompt-box">
           Create a conversational podcast on FortiOS 7.6 IPSec VPN advanced topics for NSE4. Cover: XAuth as an extended authentication layer on top of IPSec, Peer ID types and why they matter for dynamic IP peers, dialup VPN architecture with multiple remote peers, certificate vs PSK tradeoffs at scale, IKEv2 advantages over IKEv1, and troubleshooting Phase 1 vs Phase 2 failures. Use analogies throughout.
@@ -822,7 +908,7 @@
       </div>
 
       <div class="podcast-card">
-        <h3>🎙 Diagnostics + Troubleshooting</h3>
+        <h3>&#128218; Diagnostics + Troubleshooting</h3>
         <div class="prompt-label">NotebookLM Prompt</div>
         <div class="prompt-box">
           Create a conversational podcast on FortiOS 7.6 diagnostics and troubleshooting for NSE4. Cover: systematic troubleshooting methodology, diag debug flow command sequence and output interpretation, RPF strict vs loose mode, key diagnostic CLI commands, how to diagnose policy, routing, NAT and VPN issues, debug logging best practices and cleanup, and common failure scenarios with resolution steps. Target: experienced network engineer.
@@ -831,7 +917,7 @@
       </div>
 
       <div class="podcast-card">
-        <h3>🎙 FortiSASE + FGT in Cloud</h3>
+        <h3>&#128218; FortiSASE + FGT in Cloud</h3>
         <div class="prompt-label">NotebookLM Prompt</div>
         <div class="prompt-box">
           Create a conversational podcast covering FortiSASE and FortiGate in Cloud for NSE4 FortiOS 7.6. For FortiSASE: what SASE is, how FortiSASE delivers security as a service, relationship to SD-WAN and local internet breakout, and key components. For FGT in Cloud: deployment models on AWS/Azure/GCP, licensing differences, HA in cloud environments, and key configuration differences vs on-premise. Target: experienced network engineer.
@@ -840,10 +926,10 @@
       </div>
 
       <div class="podcast-card">
-        <h3>🎙 Full Exam Cram</h3>
+        <h3>&#128218; Full Exam Cram</h3>
         <div class="prompt-label">NotebookLM Prompt</div>
         <div class="prompt-box">
-          Create a comprehensive exam cram podcast for NSE4 FortiOS 7.6. Cover high-yield exam topics in order of importance: SSL inspection and security profile dependencies, firewall policy logic and NAT, IPSec VPN phases and troubleshooting, FSSO architecture, SD-WAN path selection strategies, HA failover mechanics, routing AD/metric/priority hierarchy, certificate operations. Focus on precise Fortinet terminology, common exam traps, and scenario reasoning. Fast-paced and dense — this is last minute revision.
+          Create a comprehensive exam cram podcast for NSE4 FortiOS 7.6. Cover high-yield exam topics in order of importance: SSL inspection and security profile dependencies, firewall policy logic and NAT, IPSec VPN phases and troubleshooting, FSSO architecture, SD-WAN path selection strategies, HA failover mechanics, routing AD/metric/priority hierarchy, certificate operations. Focus on precise Fortinet terminology, common exam traps, and scenario reasoning. Fast-paced and dense &mdash; this is last minute revision.
           <button class="copy-btn" onclick="copyPrompt(this)">copy</button>
         </div>
       </div>
@@ -852,36 +938,175 @@
   </div>
 
   <footer>
-    NSE4 FortiOS 7.6 · Target: May 2nd · Built for focused, structured preparation
+    NSE4 FortiOS 7.6 &middot; Target: May 2nd &middot; Built for focused, structured preparation
   </footer>
 
 </div>
 
 <script>
-  // Countdown
-  function updateCountdown() {
+  // ── COUNTDOWN ────────────────────────────────────────────────
+  (function () {
     const examDate = new Date('2026-05-02');
     const today = new Date();
-    today.setHours(0,0,0,0);
+    today.setHours(0, 0, 0, 0);
     const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
-    document.getElementById('countdown').textContent = diff + ' days until exam · May 2nd';
-  }
-  updateCountdown();
+    document.getElementById('countdown').textContent = diff + ' days until exam \u00b7 May 2nd';
+  })();
 
-  // Copy prompt
+  // ── COPY PROMPT ──────────────────────────────────────────────
   function copyPrompt(btn) {
     const text = btn.parentElement.textContent.replace('copy', '').trim();
-    navigator.clipboard.writeText(text).then(() => {
+    navigator.clipboard.writeText(text).then(function () {
       btn.textContent = 'copied!';
       btn.style.color = 'var(--green)';
       btn.style.borderColor = 'var(--green)';
-      setTimeout(() => {
+      setTimeout(function () {
         btn.textContent = 'copy';
         btn.style.color = '';
         btn.style.borderColor = '';
       }, 2000);
     });
   }
+
+  // ── READINESS BAR ────────────────────────────────────────────
+  var barFill  = document.getElementById('bar-fill');
+  var scoreEl  = document.getElementById('readiness-score');
+  var NS       = 'nse4-';
+
+  function setBarColor(pct) {
+    if (pct >= 75) {
+      barFill.style.background = 'linear-gradient(90deg, var(--green), var(--accent))';
+    } else if (pct >= 60) {
+      barFill.style.background = 'linear-gradient(90deg, var(--orange), var(--accent))';
+    } else {
+      barFill.style.background = 'linear-gradient(90deg, var(--red), var(--orange))';
+    }
+  }
+
+  function applyReadiness(pct) {
+    pct = Math.min(100, Math.max(0, pct));
+    barFill.style.width = pct + '%';
+    scoreEl.textContent = pct + '%';
+    setBarColor(pct);
+  }
+
+  var savedPct = localStorage.getItem(NS + 'readiness');
+  var initPct  = savedPct !== null ? parseInt(savedPct, 10) : 68;
+
+  // Set initial display synchronously so the CSS transition animates on load
+  scoreEl.textContent = initPct + '%';
+  setTimeout(function () { applyReadiness(initPct); }, 60);
+
+  scoreEl.addEventListener('click', function () {
+    var current = parseInt(scoreEl.textContent, 10);
+    var input = document.createElement('input');
+    input.type = 'number';
+    input.min = '0';
+    input.max = '100';
+    input.value = current;
+    input.className = 'readiness-input-inline';
+    scoreEl.replaceWith(input);
+    input.focus();
+    input.select();
+
+    function commit() {
+      var val = Math.min(100, Math.max(0, parseInt(input.value, 10) || 0));
+      localStorage.setItem(NS + 'readiness', val);
+      input.replaceWith(scoreEl);
+      applyReadiness(val);
+    }
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter')  { e.preventDefault(); commit(); }
+      if (e.key === 'Escape') { input.replaceWith(scoreEl); scoreEl.textContent = current + '%'; }
+    });
+  });
+
+  // ── TODAY HIGHLIGHT ──────────────────────────────────────────
+  (function () {
+    var now   = new Date();
+    var pad   = function (n) { return String(n).padStart(2, '0'); };
+    var today = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+
+    document.querySelectorAll('.day-card[data-date]').forEach(function (card) {
+      if (card.dataset.date === today) {
+        card.classList.add('today');
+        var badge = document.createElement('div');
+        badge.className = 'today-badge';
+        badge.textContent = 'TODAY';
+        card.querySelector('.day-label').appendChild(badge);
+      }
+    });
+  })();
+
+  // ── COMPLETION TOGGLES ───────────────────────────────────────
+  // Apr 11–14 are pre-completed; seed localStorage from HTML on first visit.
+  var preCompleted = ['2026-04-11','2026-04-12','2026-04-13','2026-04-14'];
+
+  document.querySelectorAll('.day-card[data-date]').forEach(function (card) {
+    var date = card.dataset.date;
+    var key  = NS + 'completed-' + date;
+    var cb   = card.querySelector('.completion-cb');
+
+    if (localStorage.getItem(key) === null) {
+      localStorage.setItem(key, preCompleted.indexOf(date) !== -1 ? 'true' : 'false');
+    }
+
+    var done = localStorage.getItem(key) === 'true';
+    card.classList.toggle('completed', done);
+    cb.checked = done;
+
+    cb.addEventListener('change', function () {
+      localStorage.setItem(key, cb.checked ? 'true' : 'false');
+      card.classList.toggle('completed', cb.checked);
+    });
+  });
+
+  // ── SESSION NOTES ────────────────────────────────────────────
+  document.querySelectorAll('.notes-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var card     = btn.closest('.day-card');
+      var row      = card.querySelector('.notes-row');
+      var isOpen   = row.classList.toggle('open');
+      var hasNotes = btn.classList.contains('has-notes');
+
+      if (isOpen) {
+        row.querySelector('.session-notes').focus();
+        btn.textContent = 'close';
+      } else {
+        btn.textContent = hasNotes ? 'notes \u25cf' : 'notes';
+      }
+    });
+  });
+
+  document.querySelectorAll('.session-notes').forEach(function (ta) {
+    var card = ta.closest('.day-card');
+    var date = card.dataset.date;
+    var key  = NS + 'notes-' + date;
+    var btn  = card.querySelector('.notes-btn');
+
+    var saved = localStorage.getItem(key);
+    if (saved) {
+      ta.value = saved;
+      if (saved.trim()) {
+        btn.textContent = 'notes \u25cf';
+        btn.classList.add('has-notes');
+      }
+    }
+
+    ta.addEventListener('input', function () {
+      localStorage.setItem(key, ta.value);
+      if (ta.value.trim()) {
+        btn.textContent = 'notes \u25cf';
+        btn.classList.add('has-notes');
+      } else {
+        btn.textContent = 'close';
+        btn.classList.remove('has-notes');
+      }
+    });
+  });
 </script>
 
 </body>
