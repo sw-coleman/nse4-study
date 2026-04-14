@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NSE4 Study Plan — May 2nd</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0e0f11;
-    --surface: #16181c;
-    --surface2: #1e2128;
-    --border: #2a2d35;
-    --text: #e8e9eb;
-    --muted: #6b7280;
-    --green: #4ade80;
-    --orange: #fb923c;
-    --red: #f87171;
-    --accent: #60a5fa;
-    --accent2: #a78bfa;
+    --bg: #0d0e10;
+    --surface: #141618;
+    --surface2: #1c1e22;
+    --border: #272a31;
+    --text: #ecedef;
+    --muted: #656d7a;
+    --green: #22c55e;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --accent: #e8173d;
+    --accent2: #ff5f7e;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,7 +25,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', system-ui, sans-serif;
     min-height: 100vh;
     padding: 48px 24px;
   }
@@ -53,6 +53,7 @@
 
   .exam-badge {
     display: inline-block;
+    font-family: 'DM Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -87,6 +88,7 @@
 
   .countdown {
     display: inline-block;
+    font-family: 'DM Mono', monospace;
     background: var(--surface2);
     border: 1px solid var(--border);
     padding: 8px 16px;
@@ -94,6 +96,29 @@
     font-size: 12px;
     color: var(--accent);
     margin-top: 16px;
+  }
+
+  /* Slim fixed progress ribbon — appears when readiness card scrolls out of view */
+  #sticky-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 1000;
+    background: var(--border);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  #sticky-progress.visible { opacity: 1; }
+
+  #sticky-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--orange));
+    transition: width 0.5s ease;
   }
 
   /* Readiness Bar */
@@ -113,6 +138,7 @@
   }
 
   .readiness-label {
+    font-family: 'DM Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -139,6 +165,7 @@
   }
 
   .readiness-edit-hint {
+    font-family: 'DM Mono', monospace;
     font-size: 9px;
     color: var(--border);
     letter-spacing: 0.08em;
@@ -171,12 +198,13 @@
   .bar-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--orange), var(--accent));
+    background: linear-gradient(90deg, var(--accent), var(--orange));
     border-radius: 2px;
     transition: width 0.8s ease;
   }
 
   .target-line {
+    font-family: 'DM Mono', monospace;
     font-size: 11px;
     color: var(--muted);
     margin-top: 8px;
@@ -208,9 +236,9 @@
 
   .week-title h2 {
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.01em;
   }
 
   .week-title p {
@@ -237,30 +265,32 @@
     gap: 16px;
     align-items: start;
     transition: border-color 0.2s;
+    cursor: pointer;
   }
 
-  .day-card:hover { border-color: var(--accent); }
+  .day-card:not(.completed):hover { border-color: var(--accent); }
 
   .day-card.exam-day {
     border-color: var(--green);
-    background: rgba(74, 222, 128, 0.05);
+    background: rgba(34, 197, 94, 0.04);
   }
 
   .day-card.test-day {
-    border-color: var(--accent2);
-    background: rgba(167, 139, 250, 0.05);
+    border-color: var(--orange);
+    background: rgba(245, 158, 11, 0.04);
   }
 
-  .day-card.rest-day { opacity: 0.6; }
+  .day-card.rest-day { opacity: 0.5; }
 
-  /* Today highlight */
+  /* Today highlight — Fortinet red glow */
   .day-card.today {
     border-color: var(--accent) !important;
-    box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.3), 0 0 24px rgba(96, 165, 250, 0.07);
+    box-shadow: 0 0 0 1px rgba(232, 23, 61, 0.25), 0 0 28px rgba(232, 23, 61, 0.12);
   }
 
   .today-badge {
     display: inline-block;
+    font-family: 'DM Mono', monospace;
     font-size: 8px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -288,15 +318,16 @@
 
   .day-content h3 {
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text);
     margin-bottom: 4px;
+    letter-spacing: -0.01em;
   }
 
   .day-content p {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--muted);
-    line-height: 1.5;
+    line-height: 1.55;
   }
 
   .day-tags {
@@ -308,18 +339,19 @@
   }
 
   .tag {
+    font-family: 'DM Mono', monospace;
     font-size: 10px;
     padding: 2px 8px;
     border-radius: 2px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
   }
 
-  .tag-socratic { background: rgba(96, 165, 250, 0.15); color: var(--accent); }
-  .tag-podcast  { background: rgba(167, 139, 250, 0.15); color: var(--accent2); }
-  .tag-video    { background: rgba(251, 146, 60, 0.15);  color: var(--orange); }
-  .tag-quiz     { background: rgba(74, 222, 128, 0.15);  color: var(--green); }
-  .tag-rest     { background: rgba(107, 114, 128, 0.15); color: var(--muted); }
-  .tag-exam     { background: rgba(74, 222, 128, 0.2);   color: var(--green); }
+  .tag-socratic { background: rgba(232, 23, 61, 0.12);  color: var(--accent); }
+  .tag-podcast  { background: rgba(255, 95, 126, 0.12); color: var(--accent2); }
+  .tag-video    { background: rgba(245, 158, 11, 0.12); color: var(--orange); }
+  .tag-quiz     { background: rgba(34, 197, 94, 0.12);  color: var(--green); }
+  .tag-rest     { background: rgba(101, 109, 122, 0.15); color: var(--muted); }
+  .tag-exam     { background: rgba(34, 197, 94, 0.15);  color: var(--green); }
 
   /* Completion toggle */
   .complete-label {
@@ -337,21 +369,45 @@
     height: 0;
   }
 
-  .complete-label:hover .day-status { background: var(--muted); }
+  .complete-label:hover .day-status { border-color: var(--muted); }
 
   .day-status {
-    width: 8px;
-    height: 8px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background: var(--border);
-    margin-top: 4px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    margin-top: 2px;
     flex-shrink: 0;
-    transition: background 0.2s;
+    transition: all 0.2s;
+    position: relative;
   }
 
-  .day-card.completed { opacity: 0.75; }
-  .day-card.completed .day-status { background: var(--green); }
-  .day-card.completed h3::after { content: ' ✓'; color: var(--green); font-size: 11px; }
+  /* Completed card — green wash + thick left border + check icon */
+  .day-card.completed {
+    border-left: 3px solid var(--green) !important;
+    background: rgba(34, 197, 94, 0.05);
+  }
+
+  .day-card.completed .day-status {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .day-card.completed .day-status::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #0d0e10;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .day-card.completed .day-content h3 { color: var(--muted); }
 
   /* Session notes */
   .notes-row {
@@ -394,7 +450,7 @@
   .tag-notes:hover { color: var(--text); border-color: var(--border); }
 
   .tag-notes.has-notes {
-    background: rgba(167, 139, 250, 0.15);
+    background: rgba(232, 23, 61, 0.12);
     color: var(--accent2);
     border-color: transparent;
   }
@@ -403,6 +459,7 @@
   .podcasts { margin-bottom: 56px; }
 
   .section-header {
+    font-family: 'DM Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -975,11 +1032,11 @@
 
   function setBarColor(pct) {
     if (pct >= 75) {
-      barFill.style.background = 'linear-gradient(90deg, var(--green), var(--accent))';
+      barFill.style.background = 'linear-gradient(90deg, var(--accent), var(--green))';
     } else if (pct >= 60) {
-      barFill.style.background = 'linear-gradient(90deg, var(--orange), var(--accent))';
+      barFill.style.background = 'linear-gradient(90deg, var(--accent), var(--orange))';
     } else {
-      barFill.style.background = 'linear-gradient(90deg, var(--red), var(--orange))';
+      barFill.style.background = 'linear-gradient(90deg, var(--red), var(--accent))';
     }
   }
 
@@ -988,6 +1045,8 @@
     barFill.style.width = pct + '%';
     scoreEl.textContent = pct + '%';
     setBarColor(pct);
+    var sf = document.getElementById('sticky-progress-fill');
+    if (sf) sf.style.width = pct + '%';
   }
 
   var savedPct = localStorage.getItem(NS + 'readiness');
@@ -1023,11 +1082,31 @@
     });
   });
 
-  // ── TODAY HIGHLIGHT ──────────────────────────────────────────
+  // ── SLIM STICKY PROGRESS BAR ─────────────────────────────────
   (function () {
-    var now   = new Date();
-    var pad   = function (n) { return String(n).padStart(2, '0'); };
-    var today = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+    var bar  = document.createElement('div');
+    var fill = document.createElement('div');
+    bar.id   = 'sticky-progress';
+    fill.id  = 'sticky-progress-fill';
+    bar.appendChild(fill);
+    document.body.appendChild(bar);
+
+    // Set initial width (initPct already defined above)
+    fill.style.width = initPct + '%';
+
+    new IntersectionObserver(function (entries) {
+      bar.classList.toggle('visible', !entries[0].isIntersecting);
+    }, { threshold: 0 }).observe(document.querySelector('.readiness'));
+  })();
+
+  // ── TODAY HIGHLIGHT (AEST — Australia/Canberra) ──────────────
+  (function () {
+    var parts = new Intl.DateTimeFormat('en-AU', {
+      timeZone: 'Australia/Canberra',
+      year: 'numeric', month: '2-digit', day: '2-digit'
+    }).formatToParts(new Date());
+    var get   = function (type) { return parts.find(function (p) { return p.type === type; }).value; };
+    var today = get('year') + '-' + get('month') + '-' + get('day');
 
     document.querySelectorAll('.day-card[data-date]').forEach(function (card) {
       if (card.dataset.date === today) {
@@ -1041,6 +1120,7 @@
   })();
 
   // ── COMPLETION TOGGLES ───────────────────────────────────────
+  // Click anywhere on a card to toggle complete (except notes area).
   // Apr 11–14 are pre-completed; seed localStorage from HTML on first visit.
   var preCompleted = ['2026-04-11','2026-04-12','2026-04-13','2026-04-14'];
 
@@ -1057,7 +1137,12 @@
     card.classList.toggle('completed', done);
     cb.checked = done;
 
-    cb.addEventListener('change', function () {
+    card.addEventListener('click', function (e) {
+      if (e.target.closest('.notes-row') || e.target.closest('.notes-btn')) return;
+      // If click was on the label, the browser already toggled cb — don't double-flip
+      if (!e.target.closest('.complete-label')) {
+        cb.checked = !cb.checked;
+      }
       localStorage.setItem(key, cb.checked ? 'true' : 'false');
       card.classList.toggle('completed', cb.checked);
     });
