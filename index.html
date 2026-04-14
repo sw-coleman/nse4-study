@@ -546,7 +546,7 @@
     font-size: 12px;
   }
 
-  .gap-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .gap-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; transition: background 0.4s ease; }
   .dot-red    { background: var(--red); }
   .dot-orange { background: var(--orange); }
   .dot-green  { background: var(--green); }
@@ -622,19 +622,19 @@
   <div class="gaps">
     <div class="section-header">Knowledge Gaps to Close</div>
     <div class="gap-grid">
-      <div class="gap-item"><div class="gap-dot dot-red"></div>Antivirus</div>
-      <div class="gap-item"><div class="gap-dot dot-red"></div>IPS</div>
-      <div class="gap-item"><div class="gap-dot dot-red"></div>App Control</div>
-      <div class="gap-item"><div class="gap-dot dot-red"></div>DNS Filtering</div>
-      <div class="gap-item"><div class="gap-dot dot-orange"></div>XAuth + Peer ID</div>
-      <div class="gap-item"><div class="gap-dot dot-orange"></div>FSSO Advanced AD</div>
-      <div class="gap-item"><div class="gap-dot dot-orange"></div>Proxy vs Flow Inspection</div>
-      <div class="gap-item"><div class="gap-dot dot-orange"></div>SSL Local Server</div>
-      <div class="gap-item"><div class="gap-dot dot-orange"></div>IP Pool Types</div>
-      <div class="gap-item"><div class="gap-dot dot-orange"></div>Web Filtering Validation</div>
-      <div class="gap-item"><div class="gap-dot dot-orange"></div>Diagnostics + Troubleshooting</div>
-      <div class="gap-item"><div class="gap-dot dot-orange"></div>FGT in Cloud</div>
-      <div class="gap-item"><div class="gap-dot dot-orange"></div>FortiSASE</div>
+      <div class="gap-item" data-gap="antivirus"><div class="gap-dot dot-red"></div>Antivirus</div>
+      <div class="gap-item" data-gap="ips"><div class="gap-dot dot-red"></div>IPS</div>
+      <div class="gap-item" data-gap="app-control"><div class="gap-dot dot-red"></div>App Control</div>
+      <div class="gap-item" data-gap="dns-filtering"><div class="gap-dot dot-red"></div>DNS Filtering</div>
+      <div class="gap-item" data-gap="xauth-peer-id"><div class="gap-dot dot-orange"></div>XAuth + Peer ID</div>
+      <div class="gap-item" data-gap="fsso-advanced-ad"><div class="gap-dot dot-orange"></div>FSSO Advanced AD</div>
+      <div class="gap-item" data-gap="proxy-flow"><div class="gap-dot dot-orange"></div>Proxy vs Flow Inspection</div>
+      <div class="gap-item" data-gap="ssl-local"><div class="gap-dot dot-orange"></div>SSL Local Server</div>
+      <div class="gap-item" data-gap="ip-pools"><div class="gap-dot dot-orange"></div>IP Pool Types</div>
+      <div class="gap-item" data-gap="web-filtering"><div class="gap-dot dot-orange"></div>Web Filtering Validation</div>
+      <div class="gap-item" data-gap="diagnostics"><div class="gap-dot dot-orange"></div>Diagnostics + Troubleshooting</div>
+      <div class="gap-item" data-gap="fgt-cloud"><div class="gap-dot dot-orange"></div>FGT in Cloud</div>
+      <div class="gap-item" data-gap="fortisase"><div class="gap-dot dot-orange"></div>FortiSASE</div>
     </div>
   </div>
 
@@ -1119,10 +1119,59 @@
     });
   })();
 
+  // ── GAP MAP — date → gap IDs that turn green when day is completed ──
+  var gapMap = {
+    '2026-04-12': ['antivirus'],
+    '2026-04-13': ['ips'],
+    '2026-04-14': ['app-control', 'dns-filtering'],
+    '2026-04-15': ['web-filtering'],
+    '2026-04-18': ['xauth-peer-id'],
+    '2026-04-19': ['fsso-advanced-ad'],
+    '2026-04-20': ['proxy-flow', 'ssl-local'],
+    '2026-04-21': ['ip-pools'],
+    '2026-04-22': ['web-filtering'],
+    '2026-04-23': ['diagnostics'],
+    '2026-04-24': ['fgt-cloud', 'fortisase']
+  };
+
+  var gapOriginal = {
+    'antivirus':        'dot-red',
+    'ips':              'dot-red',
+    'app-control':      'dot-red',
+    'dns-filtering':    'dot-red',
+    'xauth-peer-id':    'dot-orange',
+    'fsso-advanced-ad': 'dot-orange',
+    'proxy-flow':       'dot-orange',
+    'ssl-local':        'dot-orange',
+    'ip-pools':         'dot-orange',
+    'web-filtering':    'dot-orange',
+    'diagnostics':      'dot-orange',
+    'fgt-cloud':        'dot-orange',
+    'fortisase':        'dot-orange'
+  };
+
+  function updateGaps() {
+    // Reset all dots to their original colours
+    Object.keys(gapOriginal).forEach(function (gapId) {
+      var dot = document.querySelector('[data-gap="' + gapId + '"] .gap-dot');
+      if (dot) dot.className = 'gap-dot ' + gapOriginal[gapId];
+    });
+    // Green-up dots for every completed day that has a mapping
+    document.querySelectorAll('.day-card[data-date]').forEach(function (card) {
+      if (localStorage.getItem(NS + 'completed-' + card.dataset.date) !== 'true') return;
+      var gaps = gapMap[card.dataset.date];
+      if (!gaps) return;
+      gaps.forEach(function (gapId) {
+        var dot = document.querySelector('[data-gap="' + gapId + '"] .gap-dot');
+        if (dot) dot.className = 'gap-dot dot-green';
+      });
+    });
+  }
+
   // ── COMPLETION TOGGLES ───────────────────────────────────────
   // Click anywhere on a card to toggle complete (except notes area).
-  // Apr 11–14 are pre-completed; seed localStorage from HTML on first visit.
-  var preCompleted = ['2026-04-11','2026-04-12','2026-04-13','2026-04-14'];
+  // Apr 11–15 are pre-completed; seed localStorage from HTML on first visit.
+  var preCompleted = ['2026-04-11','2026-04-12','2026-04-13','2026-04-14','2026-04-15'];
 
   document.querySelectorAll('.day-card[data-date]').forEach(function (card) {
     var date = card.dataset.date;
@@ -1145,8 +1194,12 @@
       }
       localStorage.setItem(key, cb.checked ? 'true' : 'false');
       card.classList.toggle('completed', cb.checked);
+      updateGaps();
     });
   });
+
+  // Run once on load to reflect existing localStorage state
+  updateGaps();
 
   // ── SESSION NOTES ────────────────────────────────────────────
   document.querySelectorAll('.notes-btn').forEach(function (btn) {
