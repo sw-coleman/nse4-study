@@ -601,7 +601,7 @@
     <div class="readiness-header">
       <span class="readiness-label">Current Readiness</span>
       <div class="readiness-score-wrapper">
-        <span class="readiness-score" id="readiness-score" title="Click to update">68%</span>
+        <span class="readiness-score" id="readiness-score" title="Click to update">75%</span>
         <span class="readiness-edit-hint">click to update</span>
       </div>
     </div>
@@ -609,8 +609,8 @@
       <div class="bar-fill" id="bar-fill"></div>
     </div>
     <div class="target-line">
-      <span>Baseline 58% &middot; April 11 &middot; Updated April 15</span>
-      <span>Target: 75%+ by April 25</span>
+      <span>Baseline 58% &middot; April 11 &middot; Updated April 17</span>
+      <span>Target: 80%+ by April 25</span>
     </div>
   </div>
 
@@ -1050,7 +1050,7 @@
   }
 
   var savedPct = localStorage.getItem(NS + 'readiness');
-  var initPct  = savedPct !== null ? parseInt(savedPct, 10) : 68;
+  var initPct  = savedPct !== null ? parseInt(savedPct, 10) : 75;
 
   // Set initial display synchronously so the CSS transition animates on load
   scoreEl.textContent = initPct + '%';
@@ -1170,7 +1170,7 @@
   // ── COMPLETION TOGGLES ───────────────────────────────────────
   // Click anywhere on a card to toggle complete (except notes area).
   // Apr 11–15 are pre-completed; seed localStorage from HTML on first visit.
-  var preCompleted = ['2026-04-11','2026-04-12','2026-04-13','2026-04-14','2026-04-15'];
+  var preCompleted = ['2026-04-11','2026-04-12','2026-04-13','2026-04-14','2026-04-15','2026-04-16','2026-04-17'];
 
   document.querySelectorAll('.day-card[data-date]').forEach(function (card) {
     var date = card.dataset.date;
